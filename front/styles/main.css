@@ -108,6 +108,34 @@ main {
     color: #567356;
 }
 
+.active-filters {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: white;
+    cursor: pointer;
+}
+
+.filter-badge::after {
+    content: '×';
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.filter-badge:hover::after {
+    opacity: 0.8;
+}
+
 /* Grille de Pokémon */
 .pokemon-grid {
     display: grid;
