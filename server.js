@@ -14,10 +14,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/pokedex')
 
 const pokemonRouter = require('./src/routes/pokemon');
 const userRouter = require('./src/routes/user');
+const trainerRouter = require ('./src/routes/trainer');
 
 app.use('/api/pkmn', pokemonRouter);
 // app.use('/type',typeRouter);
 app.use('/users', userRouter);
+app.use('/trainer', trainerRouter);
 
 
 app.listen(port,()=>{

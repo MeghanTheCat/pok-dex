@@ -13,7 +13,7 @@ class pokemonService {
         try {
             result = await this.pkmnModel.find({});
         } catch (error) {
-            result = { error: error };
+            result = { error: error.message };
         }
         return result;
     }
@@ -23,7 +23,7 @@ class pokemonService {
         try {
             result = await this.pkmnModel.findById(id)
         } catch (error) {
-            result = { error: error }
+            result = { error: error.message }
         }
         return result;
     }
@@ -34,7 +34,7 @@ class pokemonService {
         try {
             result = await this.pkmnModel.findOne({ name: name });
         } catch (error) {
-            result = { error: error }
+            result = { error: error.message }
         }
         return result;
     }
@@ -44,7 +44,7 @@ class pokemonService {
         try {
             result = await this.pkmnModel.find({ types: { $in: [type] } });
         } catch (error) {
-            result = { error: error }
+            result = { error: error.message }
         }
     }
 
@@ -53,7 +53,7 @@ class pokemonService {
         try {
             result = await this.pkmnModel.find({ region: { $elemMatch: { regionName: region } } });
         } catch (error) {
-            result = { error: error }
+            result = { error: error.message }
         }
     }
 
@@ -75,7 +75,7 @@ class pokemonService {
                 .skip((page - 1) * size)
                 .limit(size);
         } catch (error) {
-            result = { error: error }
+            result = { error: error.message }
             console.log(error);
         }
         return result;
@@ -96,7 +96,7 @@ class pokemonService {
             return result;
         } catch (error) {
             console.log(error)
-            return { error: error }
+            return { error: error.message }
         }
     }
 
@@ -124,7 +124,7 @@ class pokemonService {
             let result = await this.pkmnModel.findByIdAndUpdate(id, pkmn);
             return result;
         } catch (error) {
-            return { error: error }
+            return { error: error.message }
         }
     }
 
@@ -133,7 +133,7 @@ class pokemonService {
         try {
             result = this.pkmnModel.findByIdAndUpdate(id, { $push: { region: region } })
         } catch (error) {
-            return { error: error }
+            return { error: error.message }
         }
         return result;
     }
@@ -143,7 +143,7 @@ class pokemonService {
         try {
             result = this.pkmnModel.findByIdAndUpdate(id, { $pull: { region: { regionName: regionName } } })
         } catch (error) {
-            return { error: error }
+            return { error: error.message }
         }
         return result;
     }

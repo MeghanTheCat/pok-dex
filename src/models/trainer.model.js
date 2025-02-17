@@ -13,6 +13,7 @@ const trainerSchema = new mongoose.Schema({
 trainerSchema.pre('save', function (next) {
     console.log('Fonction exec avant save');
     this.trainerName = this.trainerName[0].toUpperCase() + this.trainerName.slice(1).toLowerCase();
+    this.creationDate = new Date();
     next();
 });
 
