@@ -3,14 +3,15 @@ const loginForm = document.getElementById('loginForm');
 const toggleForm = document.getElementById('toggleForm');
 let isLoginForm = false;
 
+document.body.style.overflowY = 'hidden';
 
 toggleForm.addEventListener('click', () => {
     isLoginForm = !isLoginForm;
     registerForm.classList.toggle('hidden');
     loginForm.classList.toggle('hidden');
     toggleForm.textContent = isLoginForm ?
-        "Pas encore inscrit ? S'inscrire" :
-        "Déjà inscrit ? Se connecter";
+    "Pas encore inscrit ? S'inscrire" :
+    "Déjà inscrit ? Se connecter";
 });
 
 
@@ -25,14 +26,14 @@ const loginPassword = document.querySelector('#password');
 async function register(firstname, lastname, username, email, password) {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
+    
     const urlencoded = new URLSearchParams();
     urlencoded.append("firstname", firstname);
     urlencoded.append("lastname", lastname);
     urlencoded.append("username", username);
     urlencoded.append("email", email);
     urlencoded.append("password", password);
-
+    
     const requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -40,37 +41,40 @@ async function register(firstname, lastname, username, email, password) {
         redirect: "follow"
     };
     console.log(requestOptions);
-
+    
     fetch("http://localhost:3000/users/register", requestOptions)
-        .then((response) => response.text())
+    .then((response) => response.text())
         .then((result) => {
             login(email, password);
         })
         .catch((error) => console.error(error));
-}
-
-async function login(email, password) {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-    const urlencoded = new URLSearchParams();
-    urlencoded.append("email", email);
-    urlencoded.append("password", password);
-
-    const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: "follow"
-    };
-
-    fetch("http://localhost:3000/users/login", requestOptions)
+    }
+    
+    async function login(email, password) {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        
+        const urlencoded = new URLSearchParams();
+        urlencoded.append("email", email);
+        urlencoded.append("password", password);
+        console.log("fonction login");
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: "follow"
+        };
+        
+        const loginDiv = document.querySelector('.login-container');
+        fetch("http://localhost:3000/users/login", requestOptions)
         .then((response) => response.text())
         .then((result) => {
             result = JSON.parse(result);
             token = result.token;
             localStorage.setItem("token", token);
-            window.location.href = '../index.html'; 
+            loginDiv.classList.add('connected');
+            document.body.style.overflowY = 'auto';
+            console.log(loginDiv);
         })
         .catch((error) => console.error(error));
 }

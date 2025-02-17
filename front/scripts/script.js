@@ -50,16 +50,16 @@ function displayCurrentPage() {
     const end = start + ITEMS_PER_PAGE;
     const currentPokemon = allPokemon.slice(start, end);
     container.innerHTML = currentPokemon.map(pokemon => `
-                <div class="pokemon-card">
-                    <img src="${pokemon.imagePath}" alt="${pokemon.name}">
-                    <h3>${pokemon.name}</h3>
-                    <div class="pokemon-types">
-                        ${pokemon.types.map(type =>
+        <div class="pokemon-card">
+        <img src="${pokemon.imagePath}" alt="${pokemon.name}">
+        <h3>${pokemon.name}</h3>
+        <div class="pokemon-types">
+        ${pokemon.types.map(type =>
         `<span class="type-badge" style="background-color: ${getTypeColor(type)}">${type}</span>`
     ).join('')}
-                    </div>
-                </div>
-            `).join('');
+        </div>
+        </div>
+        `).join('');
 }
 
 // Fonction pour mettre à jour les contrôles de pagination
