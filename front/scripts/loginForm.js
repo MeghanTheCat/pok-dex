@@ -3,15 +3,13 @@ const loginForm = document.getElementById('loginForm');
 const toggleForm = document.getElementById('toggleForm');
 let isLoginForm = false;
 
-document.body.style.overflowY = 'hidden';
-
 toggleForm.addEventListener('click', () => {
     isLoginForm = !isLoginForm;
     registerForm.classList.toggle('hidden');
     loginForm.classList.toggle('hidden');
     toggleForm.textContent = isLoginForm ?
-        "Pas encore inscrit ? S'inscrire" :
-        "Déjà inscrit ? Se connecter";
+        "Not registered yet? Register!" :
+        "Already registered? Sign In!";
 });
 
 
@@ -71,7 +69,6 @@ async function login(email, password) {
         redirect: "follow"
     };
 
-    const loginDiv = document.querySelector('.login-container');
     fetch("http://localhost:3000/users/login", requestOptions)
         .then((response) => response.text())
         .then((result) => {
@@ -83,9 +80,7 @@ async function login(email, password) {
             } else {
                 token = result.token;
                 localStorage.setItem("token", token);
-                loginDiv.classList.add('connected');
-                document.body.style.overflowY = 'auto';
-                fetchPokemon();
+                window.location.href = "../index.html";
             }
         })
         .catch((error) => console.error(error));

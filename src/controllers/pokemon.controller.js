@@ -13,7 +13,6 @@ exports.getTypes = (req, res) => {
 }
 
 exports.getPkmns = async (req, res) => {
-    req.auth.role = await getRole(req.auth.userId);
     const pokemons = await pkmnService.getPkmns();
     const count = pokemons.length;
     return res.status(200).json({
@@ -54,7 +53,6 @@ exports.getByRegion = async (req, res) => {
 }
 
 exports.searchPokemon = async (req, res) => {
-    req.auth.role = await getRole(req.auth.userId);
     const partialName = req.query.partialName;
     const typeOne = req.query.typeOne;
     const typeTwo = req.query.typeTwo;

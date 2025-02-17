@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokedia</title>
     <link rel="stylesheet" href="./styles/main.css">
-    <link rel="stylesheet" href="./styles/loginForm.css">
-    <script src="./scripts/loginForm.js" defer></script>
     <script src="./scripts/script.js" defer></script>
 </head>
 
@@ -19,65 +17,19 @@
 <body>
     <header>
         <h1>Pokedia</h1>
+        <nav>
+            <ul>
+                <li>    
+                    <a href="./page/sign-in.html">Sign in</a>
+                </li>
+            </ul>
+        </nav>
     </header>
     <main>
-        <section class="login-container">
-            <h1>Welcome to Pokédia</h1>
-            <div class="pokedex">
-                <div class="decorative-lights">
-                    <div class="light"></div>
-                    <div class="light"></div>
-                    <div class="light"></div>
-                </div>
-                <div class="screen-container">
-                    <form id="registerForm">
-                        <div class="form-group">
-                            <label for="firstname">Prénom</label>
-                            <input type="text" id="firstname" name="firstname" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastname">Nom</label>
-                            <input type="text" id="lastname" name="lastname" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="username">Pseudo</label>
-                            <input type="text" id="username" name="username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Mot de passe</label>
-                            <input type="password" id="password" name="password" required>
-                        </div>
-                        <div id="error-ontainer" class="error-container"></div>
-                        <div class="buttons">
-                            <button type="submit">S'inscrire</button>
-                        </div>
-                    </form>
-
-                    <form id="loginForm" class="hidden">
-                        <div class="form-group">
-                            <label for="loginEmail">Email</label>
-                            <input type="email" id="loginEmail" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPassword">Mot de passe</label>
-                            <input type="password" id="loginPassword" name="password" required>
-                        </div>
-                        <div id="error-container" class="error-container"></div>
-                        <div class="buttons">
-                            <button type="submit">Se connecter</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="toggle-container">
-                    <span id="toggleForm" class="toggle-text">Déjà inscrit ? Se connecter</span>
-                </div>
-            </div>
-        </section>
         <section class="pkmn-container">
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="Rechercher un Pokémon...">
+            </div>
             <div id="pokemon-container" class="pokemon-grid"></div>
             <div class="pagination">
                 <button id="prev-btn">Précédent</button>

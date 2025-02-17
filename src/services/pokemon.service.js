@@ -12,7 +12,7 @@ class pokemonService {
         let result;
         try {
             result = await this.pkmnModel.find({})
-            .sort({ globalId: 1 });
+                .sort({ globalId: 1 });
         } catch (error) {
             result = { error: error.message };
         }
@@ -73,6 +73,7 @@ class pokemonService {
         let result;
         try {
             result = await this.pkmnModel.find(query)
+                .sort({ globalId: 1 })
                 .skip((page - 1) * size)
                 .limit(size);
         } catch (error) {
@@ -119,7 +120,7 @@ class pokemonService {
             if (!pkmn.types) {
                 pkmn.types = [typeTwo];
             } else {
-            pkmn.types.push(typeTwo);
+                pkmn.types.push(typeTwo);
             }
         }
         try {

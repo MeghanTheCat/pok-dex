@@ -1,4 +1,4 @@
-const ITEMS_PER_PAGE = 30;
+const ITEMS_PER_PAGE = 10;
 let currentPage = 1;
 let allPokemon = [];
 
@@ -116,3 +116,57 @@ document.getElementById('next-btn').addEventListener('click', () => {
         updatePaginationControls();
     }
 });
+
+let searchTimeout;
+
+async function searchPokemon(query) {
+    try {
+        const token = getAuthToken();
+        const response = await fetch(`http://localhost:3000/api/pkmn/search?partialName=${encodeURIComponent(query)}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(response.status === 401
+                ? 'Session expirée. Veuillez vous reconnecter.'
+                : 'Erreur lors de la recherche des Pokémon.');
+        }
+
+        const responseData = await response.json();
+        allPokemon = responseData.data;
+        currentPage = 1;
+
+        if (allPokemon.length === 0) {
+            document.getElementById('pokemon-container').innerHTML =
+                '<p class="error-message">Aucun Pokémon trouvé pour cette recherche.</p>';
+            updatePaginationControls();
+            return;
+        }
+
+        displayCurrentPage();
+        updatePaginationControls();
+    } catch (error) {
+        console.error('Erreur lors de la recherche:', error);
+        document.getElementById('pokemon-container').innerHTML =
+            `<p class="error-message">${error.message}</p>`;
+    }
+}
+
+document.getElementById('search-input').addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+
+    if (query === '') {
+        fetchPokemon();
+        return;
+    }
+
+    searchTimeout = setTimeout(() => {
+        searchPokemon(query);
+    }, 300);
+});
+
+fetchPokemon();
