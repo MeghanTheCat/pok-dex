@@ -64,14 +64,14 @@ for (let i = 0; i < 1025; i++) {
 
                     const myHeaders = new Headers();
                     myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2FkYmIyOGY0ZTYyYWEyMTc5YzMzMjIiLCJpYXQiOjE3Mzk0NTEzNTIsImV4cCI6MTczOTQ2NTc1Mn0.RFxIRnC9UKucp2gqwriK6csShbNMp1MP28SZ95Z4y0M");
+                    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2FkYmIyOGY0ZTYyYWEyMTc5YzMzMjIiLCJpYXQiOjE3Mzk3ODA2ODEsImV4cCI6MTczOTc5NTA4MX0.FWoD1bY6KiFLWrJjXUd-FkTDttP5qJdJc-Xk31s5Qxw");
 
                     const raw = JSON.stringify({
                         "name": name,
                         "types": types,
-                        "imagepath": imagePath,
+                        "imagePath": imagePath,
                         "description": description,
-                        "region": regionWithIndex,
+                        "regions": regionWithIndex,
                         "height": height,
                         "weight": weight,
                         "soundPath": soundPath

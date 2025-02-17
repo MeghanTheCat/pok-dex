@@ -49,7 +49,6 @@ function displayCurrentPage() {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
     const currentPokemon = allPokemon.slice(start, end);
-    console.log(currentPokemon);
     container.innerHTML = currentPokemon.map(pokemon => `
                 <div class="pokemon-card">
                     <img src="${pokemon.imagePath}" alt="${pokemon.name}">
