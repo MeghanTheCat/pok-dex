@@ -88,7 +88,8 @@ class userService {
         if (bcrypt.compareSync(password, user.password)) {
             return { 
                 message: 'Connexion réussie',
-                userId: user._id
+                userId: user._id,
+                username: user.username
             };
         }
         return { error: 'Mot de passe incorrect' };

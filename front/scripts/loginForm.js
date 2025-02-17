@@ -78,8 +78,13 @@ async function login(email, password) {
                     e.textContent = result.error;
                 });
             } else {
+                console.log(result);
                 token = result.token;
                 localStorage.setItem("token", token);
+                localStorage.setItem("userInfo", JSON.stringify({
+                    email: email,
+                    username: result.username
+                }));
                 window.location.href = "../index.html";
             }
         })

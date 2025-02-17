@@ -35,11 +35,49 @@ const TYPE_COLORS = {
     'fairy': '#EE99EE'
 };
 
+function checkAuthStatus() {
+    const token = localStorage.getItem('token');
+    const userInfo = localStorage.getItem('userInfo');
+    
+    const signInLink = document.getElementById('sign-in-link');
+    const userInfoSection = document.getElementById('user-info');
+    const usernameDisplay = document.getElementById('username-display');
+    
+    if (token && userInfo) {
+        const user = JSON.parse(userInfo);
+        signInLink.classList.add('hidden');
+        userInfoSection.classList.remove('hidden');
+        usernameDisplay.textContent = user.username;
+        console.log(user.username);
+        return true;
+    } else {
+        signInLink.classList.remove('hidden');
+        userInfoSection.classList.add('hidden');
+        return false;
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userInfo');
+    window.location.reload();
+}
+
+// Ajoute ces event listeners après les autres event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuthStatus();
+    
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+    }
+});
+
 function getAuthToken() {
     const token = localStorage.getItem('token');
-    if (!token) {
-        throw new Error(ERROR_MESSAGES.AUTH_REQUIRED);
-    }
+    // if (!token) {
+    //     throw new Error(ERROR_MESSAGES.AUTH_REQUIRED);
+    // }
     return token;
 }
 

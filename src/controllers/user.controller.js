@@ -107,6 +107,7 @@ exports.login = async (req,res)=> {
     return res.status(200).send({
         message: result.message,
         userId: result.userId,
+        username: result.username,
         token: jwt.sign(
             { userId: result.userId },
             process.env.TOKEN_SECRET,
