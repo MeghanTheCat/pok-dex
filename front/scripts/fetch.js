@@ -2,6 +2,7 @@ for (let i = 0; i < 1025; i++) {
     fetch(`https://pokeapi.co/api/v2/pokemon/${i + 1}`)
         .then(response => response.json())
         .then(data => {
+            const globalId = i + 1;
             const types = data.types.map(type => type.type.name);
             const imagePath = data.sprites.front_default;
             let description;
@@ -64,9 +65,10 @@ for (let i = 0; i < 1025; i++) {
 
                     const myHeaders = new Headers();
                     myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2FkYmIyOGY0ZTYyYWEyMTc5YzMzMjIiLCJpYXQiOjE3Mzk3ODA2ODEsImV4cCI6MTczOTc5NTA4MX0.FWoD1bY6KiFLWrJjXUd-FkTDttP5qJdJc-Xk31s5Qxw");
+                    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2IzMmUxNzQxODFjNTZjNGFjMWUxZmQiLCJpYXQiOjE3Mzk3OTYwMDYsImV4cCI6MTczOTgxMDQwNn0.T19VFQ1KVfLJqkgCVjk_QiaPvVyeDL6ibz_g7bQsHdc");
 
                     const raw = JSON.stringify({
+                        "globalId": globalId,
                         "name": name,
                         "types": types,
                         "imagePath": imagePath,

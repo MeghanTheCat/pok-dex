@@ -70,8 +70,8 @@ exports.searchPokemon = async (req, res) => {
 
 exports.addPkmn = async (req, res) => {
     req.auth.role = await getRole(req.auth.userId);
-    const { name, types, description, region, imagePath, heigth, weight, soundPath } = req.body;
-    const result = await pkmnService.addPkmn(name, types, description, region, imagePath, heigth, weight, soundPath);
+    const { globalId, name, types, description, region, imagePath, heigth, weight, soundPath } = req.body;
+    const result = await pkmnService.addPkmn(globalId, name, types, description, region, imagePath, heigth, weight, soundPath);
     return res.status(200).json({
         data: result
     });

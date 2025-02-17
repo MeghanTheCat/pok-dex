@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const pkmnSchema = new mongoose.Schema({
+    globalId: Number,
     name: String,
     types: [String],
     description: String,

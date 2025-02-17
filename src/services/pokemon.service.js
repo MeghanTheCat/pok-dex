@@ -11,7 +11,8 @@ class pokemonService {
     async getPkmns() {
         let result;
         try {
-            result = await this.pkmnModel.find({});
+            result = await this.pkmnModel.find({})
+            .sort({ globalId: 1 });
         } catch (error) {
             result = { error: error.message };
         }
@@ -81,9 +82,10 @@ class pokemonService {
         return result;
     }
 
-    async addPkmn(name, types, description, region, imagePath, heigth, weight, soundPath) {
+    async addPkmn(globalId, name, types, description, region, imagePath, heigth, weight, soundPath) {
         try {
             const result = await this.pkmnModel.create({
+                globalId: globalId,
                 name: name,
                 types: types,
                 description: description,
