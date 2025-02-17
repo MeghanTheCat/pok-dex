@@ -56,28 +56,28 @@ async function fetchPokemon() {
                 'Content-Type': 'application/json'
             }
         });
-
+        
         if (!response.ok) {
-            throw new Error(response.status === 401
-                ? ERROR_MESSAGES.SESSION_EXPIRED
+            throw new Error(response.status === 401 
+                ? ERROR_MESSAGES.SESSION_EXPIRED 
                 : ERROR_MESSAGES.SEARCH_ERROR);
         }
 
         const responseData = await response.json();
         allPokemon = responseData.data;
-
+        
         if (!Array.isArray(allPokemon)) {
             throw new Error(ERROR_MESSAGES.INVALID_FORMAT);
         }
         if (allPokemon.length === 0) {
             throw new Error(ERROR_MESSAGES.NO_POKEMON);
         }
-
+        
         displayCurrentPage();
         updatePaginationControls();
     } catch (error) {
         console.error('Erreur lors de la récupération des Pokémon:', error);
-        document.getElementById('pokemon-container').innerHTML =
+        document.getElementById('pokemon-container').innerHTML = 
             `<p class="error-message">${error.message}</p>`;
     }
 }
@@ -94,10 +94,10 @@ function displayCurrentPage() {
             <h3>${pokemon.name}</h3>
             <div class="pokemon-types">
                 ${pokemon.types.map(type =>
-        `<span class="type-badge"
+                    `<span class="type-badge"
                         onclick="addTypeFilter('${type}')"
                         style="background-color: ${getTypeColor(type)}">${type}</span>`
-    ).join('')}
+                ).join('')}
             </div>
         </div>
     `).join('');
@@ -117,20 +117,25 @@ function updatePaginationControls() {
 async function searchPokemon(query = '') {
     try {
         const token = getAuthToken();
-        let url = 'http://localhost:3000/api/pkmn/search?';
+        let url = query || activeFilters.length > 0 
+            ? 'http://localhost:3000/api/pkmn/search?' 
+            : 'http://localhost:3000/api/pkmn/all';
 
-        const params = new URLSearchParams();
-        if (query) {
-            params.append('partialName', query);
-        }
-        if (activeFilters.length > 0) {
-            params.append('typeOne', activeFilters[0]);
-            if (activeFilters[1]) {
-                params.append('typeTwo', activeFilters[1]);
+        if (query || activeFilters.length > 0) {
+            const params = new URLSearchParams();
+            if (query) {
+                params.append('partialName', query);
             }
+            if (activeFilters.length > 0) {
+                params.append('typeOne', activeFilters[0]);
+                if (activeFilters[1]) {
+                    params.append('typeTwo', activeFilters[1]);
+                }
+            }
+            url += params.toString();
         }
 
-        const response = await fetch(`${url}${params.toString()}`, {
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -138,17 +143,20 @@ async function searchPokemon(query = '') {
         });
 
         if (!response.ok) {
-            throw new Error(response.status === 401
-                ? ERROR_MESSAGES.SESSION_EXPIRED
+            throw new Error(response.status === 401 
+                ? ERROR_MESSAGES.SESSION_EXPIRED 
                 : ERROR_MESSAGES.SEARCH_ERROR);
         }
 
         const responseData = await response.json();
         allPokemon = responseData.data;
-        currentPage = 1;
+        // Ne réinitialise la page que si on fait une nouvelle recherche
+        if (query || activeFilters.length > 0) {
+            currentPage = 1;
+        }
 
         if (allPokemon.length === 0) {
-            document.getElementById('pokemon-container').innerHTML =
+            document.getElementById('pokemon-container').innerHTML = 
                 '<p class="error-message">Aucun Pokémon trouvé pour cette recherche.</p>';
             updatePaginationControls();
             return;
@@ -158,7 +166,7 @@ async function searchPokemon(query = '') {
         updatePaginationControls();
     } catch (error) {
         console.error('Erreur lors de la recherche:', error);
-        document.getElementById('pokemon-container').innerHTML =
+        document.getElementById('pokemon-container').innerHTML = 
             `<p class="error-message">${error.message}</p>`;
     }
 }
