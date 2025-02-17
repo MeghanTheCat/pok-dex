@@ -56,8 +56,15 @@ body {
 }
 
 @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .form-group {
@@ -125,9 +132,17 @@ button:hover {
     border: 2px solid #333;
 }
 
-.light:nth-child(1) { background-color: #ff0000; }
-.light:nth-child(2) { background-color: #ffff00; }
-.light:nth-child(3) { background-color: #00ff00; }
+.light:nth-child(1) {
+    background-color: #ff0000;
+}
+
+.light:nth-child(2) {
+    background-color: #ffff00;
+}
+
+.light:nth-child(3) {
+    background-color: #00ff00;
+}
 
 .toggle-container {
     text-align: center;
@@ -142,4 +157,14 @@ button:hover {
 
 .hidden {
     display: none;
+}
+
+.error-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 1.2rem;
 }

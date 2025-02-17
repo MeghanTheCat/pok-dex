@@ -4,19 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poke</title>
+    <title>Pokedia</title>
     <link rel="stylesheet" href="./styles/main.css">
     <link rel="stylesheet" href="./styles/loginForm.css">
-    <script src="./scripts/script.js" defer></script>
     <script src="./scripts/loginForm.js" defer></script>
+    <script src="./scripts/script.js" defer></script>
 </head>
+
+<!-- Ajouter région
+    page Trainer - ajouter/modifier son trainer
+    Ajouter les pokémons vus/capturés 
+    Page pokédex perso avec nos pokémons -->
 
 <body>
     <header>
-        <h1>IndexDesPoké</h1>
-        <nav>
-            <a href="page/sign-in.html">Login</a>
-        </nav>
+        <h1>Pokedia</h1>
     </header>
     <main>
         <section class="login-container">
@@ -49,6 +51,7 @@
                             <label for="password">Mot de passe</label>
                             <input type="password" id="password" name="password" required>
                         </div>
+                        <div id="error-ontainer" class="error-container"></div>
                         <div class="buttons">
                             <button type="submit">S'inscrire</button>
                         </div>
@@ -63,6 +66,7 @@
                             <label for="loginPassword">Mot de passe</label>
                             <input type="password" id="loginPassword" name="password" required>
                         </div>
+                        <div id="error-container" class="error-container"></div>
                         <div class="buttons">
                             <button type="submit">Se connecter</button>
                         </div>
@@ -83,7 +87,5 @@
         </section>
     </main>
 </body>
-
-</html>
 
 </html>

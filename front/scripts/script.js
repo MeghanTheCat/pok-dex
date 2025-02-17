@@ -77,24 +77,24 @@ function updatePaginationControls() {
 // Fonction pour obtenir la couleur correspondant au type
 function getTypeColor(type) {
     const typeColors = {
-        'feu': '#FF4422',
-        'eau': '#3399FF',
-        'plante': '#77CC55',
-        'électrik': '#FFCC33',
+        'fire': '#FF4422',
+        'water': '#3399FF',
+        'grass': '#77CC55',
+        'electric': '#FFCC33',
         'normal': '#AAAA99',
-        'combat': '#BB5544',
-        'vol': '#8899FF',
+        'fighting': '#BB5544',
+        'flying': '#8899FF',
         'poison': '#AA5599',
-        'sol': '#DDBB55',
-        'roche': '#BBAA66',
-        'psy': '#FF5599',
-        'glace': '#66CCFF',
-        'insecte': '#AABB22',
+        'ground': '#DDBB55',
+        'rock': '#BBAA66',
+        'psychic': '#FF5599',
+        'ice': '#66CCFF',
+        'bug': '#AABB22',
         'dragon': '#7766EE',
-        'spectre': '#6666BB',
-        'ténèbres': '#775544',
-        'acier': '#AAAABB',
-        'fée': '#EE99EE'
+        'ghost': '#6666BB',
+        'dark': '#775544',
+        'steel': '#AAAABB',
+        'fairy': '#EE99EE'
     };
     return typeColors[type.toLowerCase()] || '#666666';
 }
@@ -116,6 +116,3 @@ document.getElementById('next-btn').addEventListener('click', () => {
         updatePaginationControls();
     }
 });
-
-// Chargement initial
-fetchPokemon();
