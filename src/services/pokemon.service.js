@@ -83,7 +83,7 @@ class pokemonService {
         return result;
     }
 
-    async addPkmn(globalId, name, types, description, region, imagePath, heigth, weight, soundPath) {
+    async addPkmn(globalId, name, types, description, region, imagePath, height, weight, soundPath) {
         try {
             const result = await this.pkmnModel.create({
                 globalId: globalId,
@@ -92,7 +92,7 @@ class pokemonService {
                 description: description,
                 region: region,
                 imagePath: imagePath,
-                heigth: heigth,
+                height: height,
                 weight: weight,
                 soundPath: soundPath
             });
@@ -103,14 +103,14 @@ class pokemonService {
         }
     }
 
-    async updatePkmn(id, name = null, types = null, description = null, region = null, imagePath = null, heigth = null, weight = null, soundPath = null, typeOne = null, typeTwo = null) {
+    async updatePkmn(id, name = null, types = null, description = null, region = null, imagePath = null, height = null, weight = null, soundPath = null, typeOne = null, typeTwo = null) {
         let pkmn = {};
         if (name) pkmn.name = name;
         if (types) pkmn.types = types;
         if (description) pkmn.description = description;
         if (region) pkmn.region = region;
         if (imagePath) pkmn.imagePath = imagePath;
-        if (heigth) pkmn.heigth = heigth;
+        if (height) pkmn.height = height;
         if (weight) pkmn.weight = weight;
         if (soundPath) pkmn.soundPath = soundPath;
         if (typeOne) {

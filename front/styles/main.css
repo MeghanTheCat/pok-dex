@@ -406,9 +406,8 @@ main {
 .detail-pokedex {
     position: fixed;
     top: 0;
-    right: -400px;
-    /* Commence en dehors de l'écran */
-    width: 400px;
+    right: -450px;
+    width: 450px;
     height: 100%;
     background-color: var(--color-pokedex, #dc0a2d);
     z-index: 1000;

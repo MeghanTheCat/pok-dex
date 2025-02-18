@@ -10,7 +10,7 @@ const pkmnSchema = new mongoose.Schema({
         regionPokedexNumber: Number
     }],
     imagePath: String,
-    heigth: Number,
+    height: Number,
     weight: Number,
     soundPath: String
 });

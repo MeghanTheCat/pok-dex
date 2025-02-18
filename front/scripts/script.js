@@ -125,6 +125,7 @@ function displayCurrentPage() {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
     const currentPokemon = allPokemon.slice(start, end);
+    const token = getAuthToken();
 
     container.innerHTML = currentPokemon.map(pokemon => `
         <div class="pokemon-card" data-name="${pokemon.name}">
@@ -132,28 +133,27 @@ function displayCurrentPage() {
             <h3 class="pokemon-name">${pokemon.name}</h3>
             <div class="pokemon-types">
                 ${pokemon.types.map(type =>
-                    `<span class="type-badge"
+        `<span class="type-badge"
                         onclick="addTypeFilter('${type}')"
                         style="background-color: ${getTypeColor(type)}">${type}</span>`
-                ).join('')}
+    ).join('')}
             </div>
         </div>
     `).join('');
 
-    // Ajouter les event listeners après avoir créé les cartes
-    document.querySelectorAll('.pokemon-card').forEach(card => {
-        const pokemonName = card.getAttribute('data-name');
-        
-        // Ajouter l'event listener à l'image
-        card.querySelector('.pokemon-image').addEventListener('click', () => {
-            openDetailPokedex(pokemonName);
+    if (token) {
+        document.querySelectorAll('.pokemon-card').forEach(card => {
+            const pokemonName = card.getAttribute('data-name');
+
+            card.querySelector('.pokemon-image').addEventListener('click', () => {
+                openDetailPokedex(pokemonName);
+            });
+
+            card.querySelector('.pokemon-name').addEventListener('click', () => {
+                openDetailPokedex(pokemonName);
+            });
         });
-        
-        // Ajouter l'event listener au nom
-        card.querySelector('.pokemon-name').addEventListener('click', () => {
-            openDetailPokedex(pokemonName);
-        });
-    });
+    }
 }
 
 function updatePaginationControls() {
@@ -203,7 +203,6 @@ async function searchPokemon(query = '') {
 
         const responseData = await response.json();
         allPokemon = responseData.data;
-        // Ne réinitialise la page que si on fait une nouvelle recherche
         if (query || activeFilters.length > 0) {
             currentPage = 1;
         }
@@ -248,12 +247,32 @@ function updateActiveFiltersDisplay() {
     `).join('');
 }
 
-// Event Listeners
 document.getElementById('prev-btn').addEventListener('click', () => {
     if (currentPage > 1) {
         currentPage--;
         displayCurrentPage();
         updatePaginationControls();
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+
+        if (event.key === 'ArrowLeft') {
+            if (currentPage > 1) {
+                currentPage--;
+                displayCurrentPage();
+                updatePaginationControls();
+            }
+        } else {
+            const totalPages = Math.ceil(allPokemon.length / ITEMS_PER_PAGE);
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayCurrentPage();
+                updatePaginationControls();
+            }
+        }
     }
 });
 
@@ -359,7 +378,7 @@ function displayPokemonDetail(pokemonData) {
             <h3>Région</h3>
             <div class="region-badges">
                 ${pokemon.region && pokemon.region.length > 0
-            ? pokemon.region.map(reg => `<span class="region-badge">${reg}</span>`).join('')
+            ? pokemon.region.map(reg => `<span class="region-badge">${reg.regionName}</span>`).join('')
             : '<span>Aucune région spécifiée</span>'}
             </div>
         </div>

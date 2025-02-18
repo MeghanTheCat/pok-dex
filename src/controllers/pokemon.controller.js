@@ -68,8 +68,8 @@ exports.searchPokemon = async (req, res) => {
 
 exports.addPkmn = async (req, res) => {
     req.auth.role = await getRole(req.auth.userId);
-    const { globalId, name, types, description, region, imagePath, heigth, weight, soundPath } = req.body;
-    const result = await pkmnService.addPkmn(globalId, name, types, description, region, imagePath, heigth, weight, soundPath);
+    const { globalId, name, types, description, region, imagePath, height, weight, soundPath } = req.body;
+    const result = await pkmnService.addPkmn(globalId, name, types, description, region, imagePath, height, weight, soundPath);
     return res.status(200).json({
         data: result
     });
@@ -82,13 +82,13 @@ exports.updatePokemon = async (req, res) => {
             error: "Vous devez être administrateur"
         });
     }
-    const { name, types, description, region, imagePath, heigth, weight, soundPath, typeOne, typeTwo } = req.query;
+    const { name, types, description, region, imagePath, height, weight, soundPath, typeOne, typeTwo } = req.query;
     if (!req.query.id) {
         return res.status(400).json({
             error: "Vous devez spéricier un identifiant"
         });
     }
-    const result = await pkmnService.updatePkmn(req.query.id, name, types, description, region, imagePath, heigth, weight, soundPath, typeOne, typeTwo);
+    const result = await pkmnService.updatePkmn(req.query.id, name, types, description, region, imagePath, height, weight, soundPath, typeOne, typeTwo);
     return res.status(200).json({
         data: result
     });

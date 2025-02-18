@@ -65,7 +65,7 @@ for (let i = 0; i < 1025; i++) {
 
                     const myHeaders = new Headers();
                     myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2IzMmUxNzQxODFjNTZjNGFjMWUxZmQiLCJpYXQiOjE3Mzk3OTYwMDYsImV4cCI6MTczOTgxMDQwNn0.T19VFQ1KVfLJqkgCVjk_QiaPvVyeDL6ibz_g7bQsHdc");
+                    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2IzMmUxNzQxODFjNTZjNGFjMWUxZmQiLCJpYXQiOjE3Mzk4NjYyNzgsImV4cCI6MTczOTg4MDY3OH0.S7QLmaW8HgEAiJrx1m3zv-dFX6aHMqSejyHpVb775eo");
 
                     const raw = JSON.stringify({
                         "globalId": globalId,
@@ -73,7 +73,7 @@ for (let i = 0; i < 1025; i++) {
                         "types": types,
                         "imagePath": imagePath,
                         "description": description,
-                        "regions": regionWithIndex,
+                        "region": regionWithIndex,
                         "height": height,
                         "weight": weight,
                         "soundPath": soundPath
