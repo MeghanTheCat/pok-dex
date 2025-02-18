@@ -38,11 +38,11 @@ const TYPE_COLORS = {
 function checkAuthStatus() {
     const token = localStorage.getItem('token');
     const userInfo = localStorage.getItem('userInfo');
-    
+
     const signInLink = document.getElementById('sign-in-link');
     const userInfoSection = document.getElementById('user-info');
     const usernameDisplay = document.getElementById('username-display');
-    
+
     if (token && userInfo) {
         const user = JSON.parse(userInfo);
         signInLink.classList.add('hidden');
@@ -66,7 +66,7 @@ function handleLogout() {
 // Ajoute ces event listeners après les autres event listeners
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthStatus();
-    
+
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout);
@@ -94,28 +94,28 @@ async function fetchPokemon() {
                 'Content-Type': 'application/json'
             }
         });
-        
+
         if (!response.ok) {
-            throw new Error(response.status === 401 
-                ? ERROR_MESSAGES.SESSION_EXPIRED 
+            throw new Error(response.status === 401
+                ? ERROR_MESSAGES.SESSION_EXPIRED
                 : ERROR_MESSAGES.SEARCH_ERROR);
         }
 
         const responseData = await response.json();
         allPokemon = responseData.data;
-        
+
         if (!Array.isArray(allPokemon)) {
             throw new Error(ERROR_MESSAGES.INVALID_FORMAT);
         }
         if (allPokemon.length === 0) {
             throw new Error(ERROR_MESSAGES.NO_POKEMON);
         }
-        
+
         displayCurrentPage();
         updatePaginationControls();
     } catch (error) {
         console.error('Erreur lors de la récupération des Pokémon:', error);
-        document.getElementById('pokemon-container').innerHTML = 
+        document.getElementById('pokemon-container').innerHTML =
             `<p class="error-message">${error.message}</p>`;
     }
 }
@@ -127,9 +127,9 @@ function displayCurrentPage() {
     const currentPokemon = allPokemon.slice(start, end);
 
     container.innerHTML = currentPokemon.map(pokemon => `
-        <div class="pokemon-card">
-            <img src="${pokemon.imagePath}" alt="${pokemon.name}">
-            <h3>${pokemon.name}</h3>
+        <div class="pokemon-card" data-name="${pokemon.name}">
+            <img src="${pokemon.imagePath}" alt="${pokemon.name}" class="pokemon-image">
+            <h3 class="pokemon-name">${pokemon.name}</h3>
             <div class="pokemon-types">
                 ${pokemon.types.map(type =>
                     `<span class="type-badge"
@@ -139,6 +139,21 @@ function displayCurrentPage() {
             </div>
         </div>
     `).join('');
+
+    // Ajouter les event listeners après avoir créé les cartes
+    document.querySelectorAll('.pokemon-card').forEach(card => {
+        const pokemonName = card.getAttribute('data-name');
+        
+        // Ajouter l'event listener à l'image
+        card.querySelector('.pokemon-image').addEventListener('click', () => {
+            openDetailPokedex(pokemonName);
+        });
+        
+        // Ajouter l'event listener au nom
+        card.querySelector('.pokemon-name').addEventListener('click', () => {
+            openDetailPokedex(pokemonName);
+        });
+    });
 }
 
 function updatePaginationControls() {
@@ -155,8 +170,8 @@ function updatePaginationControls() {
 async function searchPokemon(query = '') {
     try {
         const token = getAuthToken();
-        let url = query || activeFilters.length > 0 
-            ? 'http://localhost:3000/api/pkmn/search?' 
+        let url = query || activeFilters.length > 0
+            ? 'http://localhost:3000/api/pkmn/search?'
             : 'http://localhost:3000/api/pkmn/all';
 
         if (query || activeFilters.length > 0) {
@@ -181,8 +196,8 @@ async function searchPokemon(query = '') {
         });
 
         if (!response.ok) {
-            throw new Error(response.status === 401 
-                ? ERROR_MESSAGES.SESSION_EXPIRED 
+            throw new Error(response.status === 401
+                ? ERROR_MESSAGES.SESSION_EXPIRED
                 : ERROR_MESSAGES.SEARCH_ERROR);
         }
 
@@ -194,7 +209,7 @@ async function searchPokemon(query = '') {
         }
 
         if (allPokemon.length === 0) {
-            document.getElementById('pokemon-container').innerHTML = 
+            document.getElementById('pokemon-container').innerHTML =
                 '<p class="error-message">Aucun Pokémon trouvé pour cette recherche.</p>';
             updatePaginationControls();
             return;
@@ -204,7 +219,7 @@ async function searchPokemon(query = '') {
         updatePaginationControls();
     } catch (error) {
         console.error('Erreur lors de la recherche:', error);
-        document.getElementById('pokemon-container').innerHTML = 
+        document.getElementById('pokemon-container').innerHTML =
             `<p class="error-message">${error.message}</p>`;
     }
 }
@@ -256,6 +271,131 @@ document.getElementById('search-input').addEventListener('input', (e) => {
     const query = e.target.value.trim();
     searchTimeout = setTimeout(() => searchPokemon(query), 300);
 });
+
+// Pokédex détails
+const detailPokedex = document.getElementById('detail-pokedex');
+const overlay = document.getElementById('overlay');
+const closePokedexBtn = document.getElementById('close-pokedex');
+
+const STAT_COLORS = {
+    'name': '#FF0000',
+    'types': '#F08030',
+    'description': '#F8D030',
+    'region': '#6890F0',
+    'weight': '#78C850',
+    'height': '#F85888'
+};
+
+function openDetailPokedex(pokemonName) {
+    fetchPokemonDetail(pokemonName);
+    overlay.style.display = 'block';
+    setTimeout(() => {
+        detailPokedex.classList.add('open');
+    }, 10);
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetailPokedex() {
+    detailPokedex.classList.remove('open');
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 500);
+    document.body.style.overflow = '';
+}
+
+async function fetchPokemonDetail(pokemonName) {
+    try {
+        const token = getAuthToken();
+        const response = await fetch(`http://localhost:3000/api/pkmn?name=${pokemonName.toLowerCase()}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(response.status === 401
+                ? ERROR_MESSAGES.SESSION_EXPIRED
+                : 'Erreur lors de la récupération des détails');
+        }
+
+        const data = await response.json();
+        displayPokemonDetail(data);
+    } catch (error) {
+        console.error('Erreur:', error);
+        document.getElementById('pokemon-detail').innerHTML = `<p class="error-message">${error.message}</p>`;
+    }
+}
+
+// Fonction pour afficher les détails d'un Pokémon
+function displayPokemonDetail(pokemonData) {
+    const pokemon = pokemonData.data;
+    if (!pokemon) {
+        document.getElementById('pokemon-detail').innerHTML =
+            '<p class="error-message">Aucune donnée disponible pour ce Pokémon</p>';
+        return;
+    }
+
+    // Structure HTML pour le detail-pokedex
+    document.getElementById('pokemon-detail').innerHTML = `
+        <div class="pokemon-detail-header">
+            <img id="detail-image" src="${pokemon.imagePath || ''}" alt="${pokemon.name}">
+            <div class="pokemon-detail-info">
+                <h2 id="detail-name">${pokemon.name}</h2>
+                <div id="detail-types" class="pokemon-types">
+                    ${pokemon.types.map(type =>
+        `<span class="type-badge" style="background-color: ${getTypeColor(type)}">${type}</span>`
+    ).join('')}
+                </div>
+            </div>
+        </div>
+
+        <div class="pokemon-detail-description">
+            <h3>Description</h3>
+            <p>${pokemon.description || 'Aucune description disponible'}</p>
+        </div>
+
+        <div class="pokemon-detail-region">
+            <h3>Région</h3>
+            <div class="region-badges">
+                ${pokemon.region && pokemon.region.length > 0
+            ? pokemon.region.map(reg => `<span class="region-badge">${reg}</span>`).join('')
+            : '<span>Aucune région spécifiée</span>'}
+            </div>
+        </div>
+
+        <div class="pokemon-detail-dimensions">
+            <div class="dimension">
+                <span>Taille</span>
+                <span>${pokemon.height ? `${pokemon.height / 10} m` : 'N/A'}</span>
+            </div>
+            <div class="dimension">
+                <span>Poids</span>
+                <span>${pokemon.weight ? `${pokemon.weight / 10} kg` : 'N/A'}</span>
+            </div>
+        </div>
+
+        ${pokemon.soundPath ? `
+        <div class="pokemon-detail-sound">
+            <button id="play-sound" class="sound-button">
+                <span class="sound-icon">🔊</span> Écouter le cri
+            </button>
+            <audio id="pokemon-cry" src="${pokemon.soundPath}"></audio>
+        </div>
+        ` : ''}
+    `;
+
+    const playButton = document.getElementById('play-sound');
+    if (playButton) {
+        playButton.addEventListener('click', () => {
+            const audio = document.getElementById('pokemon-cry');
+            audio.play();
+        });
+    }
+}
+
+closePokedexBtn.addEventListener('click', closeDetailPokedex);
+overlay.addEventListener('click', closeDetailPokedex);
 
 // Initial load
 fetchPokemon();
