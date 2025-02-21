@@ -4,7 +4,6 @@ let allPokemon = [];
 let searchTimeout;
 let activeFilters = [];
 
-// Constantes pour les messages d'erreur
 const ERROR_MESSAGES = {
     AUTH_REQUIRED: 'Token d\'authentification non trouvé, veuillez vous connecter.',
     SESSION_EXPIRED: 'Session expirée. Veuillez vous reconnecter.',
@@ -13,7 +12,6 @@ const ERROR_MESSAGES = {
     SEARCH_ERROR: 'Erreur lors de la recherche des Pokémon.'
 };
 
-// Couleurs des types de Pokémon
 const TYPE_COLORS = {
     'fire': '#FF4422',
     'water': '#3399FF',
@@ -43,15 +41,19 @@ function checkAuthStatus() {
     const userInfoSection = document.getElementById('user-info');
     const usernameDisplay = document.getElementById('username-display');
 
+    const trainerLink = document.getElementById('trainer-link');
+
     if (token && userInfo) {
         const user = JSON.parse(userInfo);
         signInLink.classList.add('hidden');
         userInfoSection.classList.remove('hidden');
+        trainerLink.classList.remove('hidden');
         usernameDisplay.textContent = user.username;
         return true;
     } else {
         signInLink.classList.remove('hidden');
         userInfoSection.classList.add('hidden');
+        trainerLink.classList.add('hidden');
         return false;
     }
 }
@@ -62,7 +64,6 @@ function handleLogout() {
     window.location.reload();
 }
 
-// Ajoute ces event listeners après les autres event listeners
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthStatus();
 
@@ -74,9 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function getAuthToken() {
     const token = localStorage.getItem('token');
-    // if (!token) {
-    //     throw new Error(ERROR_MESSAGES.AUTH_REQUIRED);
-    // }
     return token;
 }
 
@@ -119,39 +117,165 @@ async function fetchPokemon() {
     }
 }
 
-function displayCurrentPage() {
+async function displayCurrentPage() {
     const container = document.getElementById('pokemon-container');
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
     const currentPokemon = allPokemon.slice(start, end);
     const token = getAuthToken();
+    container.innerHTML = '';
+    let trainer = null;
 
-    container.innerHTML = currentPokemon.map(pokemon => `
-        <div class="pokemon-card" data-name="${pokemon.name}">
-            <img src="${pokemon.imagePath}" alt="${pokemon.name}" class="pokemon-image">
-            <h3 class="pokemon-name">${pokemon.name}</h3>
-            <div class="pokemon-types">
-                ${pokemon.types.map(type =>
-        `<span class="type-badge"
-                        onclick="addTypeFilter('${type}')"
-                        style="background-color: ${getTypeColor(type)}">${type}</span>`
-    ).join('')}
+    if (localStorage.getItem('userInfo')) {
+        const user = JSON.parse(localStorage.getItem('userInfo'));
+        const username = user.username;
+        const response = await fetch(`http://localhost:3000/trainer/search?username=${username}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        trainer = await response.json();
+        trainer = trainer.data;
+    }
+
+    currentPokemon.forEach(pokemon => {
+        let isSeen = false;
+        let isCaptured = false;
+        let imageFilter = 'brightness(0)'; // Par défaut: noir (non vu)
+
+        if (trainer) {
+            isCaptured = trainer.pkmnCatch.some(capturedPkmn => capturedPkmn.name === pokemon.name);
+            isSeen = trainer.pkmnSeen.some(seenPkmn => seenPkmn.name === pokemon.name);
+
+            if (isCaptured) {
+                imageFilter = 'none'; // Normal
+            } else if (isSeen) {
+                imageFilter = 'grayscale(100%)'; // Noir et blanc
+            }
+        }
+
+        let typesHTML = '';
+        pokemon.types.forEach(type => {
+            typesHTML += `<span class="type-badge"
+                onclick="addTypeFilter('${type}')"
+                style="background-color: ${getTypeColor(type)}">${type}</span>`;
+        });
+
+        // Ne montrer les boutons que si le Pokémon n'est ni vu ni capturé
+        const actionButtons = (!isSeen && !isCaptured) ? `
+            <div class="pokemon-actions">
+                <button class="action-btn see-btn"
+                    onclick="handleSeePokemon('${pokemon._id}', '${trainer._id}')">
+                    <img src="assets/search.png"/>
+                </button>
+                <button class="action-btn catch-btn"
+                    onclick="handleCatchPokemon('${pokemon._id}', '${trainer._id}')">
+                    <img src="assets/pokeball.png"/>
+                </button>
             </div>
-        </div>
-    `).join('');
+        ` : (!isCaptured) ? `
+            <div class="pokemon-actions">
+                <button class="action-btn catch-btn"
+                    onclick="handleCatchPokemon('${pokemon._id}', '${trainer._id}')">
+                    <img src="assets/pokeball.png"/>
+                </button>
+            </div>
+        ` : '';
+        console.log(trainer._id)
+        const pokemonCard = `
+            <div class="pokemon-card" data-name="${pokemon.name}">
+                <div class="pokemon-image-container">
+                    <img src="${pokemon.imagePath}" alt="${pokemon.name}" 
+                        class="pokemon-image" 
+                        style="filter: ${imageFilter}">
+                    ${actionButtons}
+                </div>
+                <h3 class="pokemon-name">${pokemon.name}</h3>
+                <div class="pokemon-types">
+                    ${typesHTML}
+                </div>
+            </div>
+        `;
+        container.innerHTML += pokemonCard;
+    });
 
     if (token) {
         document.querySelectorAll('.pokemon-card').forEach(card => {
             const pokemonName = card.getAttribute('data-name');
-
-            card.querySelector('.pokemon-image').addEventListener('click', () => {
-                openDetailPokedex(pokemonName);
-            });
-
             card.querySelector('.pokemon-name').addEventListener('click', () => {
                 openDetailPokedex(pokemonName);
             });
+            card.querySelector('.pokemon-image').addEventListener('click', () => {
+                openDetailPokedex(pokemonName);
+            })
         });
+    }
+}
+
+// Fonctions pour gérer les actions
+async function handleSeePokemon(pokemonId, trainerId) {
+    const token = getAuthToken();
+    if (!token) return;
+
+    try {
+        const response = await fetch(`http://localhost:3000/trainer/see`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                trainerId: trainerId,
+                pokemonId: pokemonId
+            })
+        });
+        if (response.ok) {
+            // Rafraîchir l'affichage
+            await displayCurrentPage();
+        }
+    } catch (error) {
+        console.error('Error marking pokemon as seen:', error);
+    }
+}
+
+async function handleCatchPokemon(pokemonId, trainerId) {
+    const token = getAuthToken();
+    if (!token) return;
+    console.log(pokemonId, "pokemonID");
+    console.log(trainerId, "TRAINER ID MOTHER FUCKER");
+
+    try {
+        // Première requête pour marquer comme vu
+        await fetch(`http://localhost:3000/trainer/see`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                trainerId: trainerId,
+                pokemonId: pokemonId
+            })
+        });
+
+        const response = await fetch(`http://localhost:3000/trainer/mark`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                trainerId: trainerId,
+                pokemonId: pokemonId
+            })
+        });
+
+        if (response.ok) {
+            // Rafraîchir l'affichage
+            await displayCurrentPage();
+        }
+    } catch (error) {
+        console.error('Error catching pokemon:', error);
     }
 }
 
@@ -254,7 +378,7 @@ document.getElementById('prev-btn').addEventListener('click', () => {
     }
 });
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
         event.preventDefault();
 
@@ -290,7 +414,6 @@ document.getElementById('search-input').addEventListener('input', (e) => {
     searchTimeout = setTimeout(() => searchPokemon(query), 300);
 });
 
-// Pokédex détails
 const detailPokedex = document.getElementById('detail-pokedex');
 const overlay = document.getElementById('overlay');
 const closePokedexBtn = document.getElementById('close-pokedex');
@@ -345,7 +468,6 @@ async function fetchPokemonDetail(pokemonName) {
     }
 }
 
-// Fonction pour afficher les détails d'un Pokémon
 function displayPokemonDetail(pokemonData) {
     const pokemon = pokemonData.data;
     if (!pokemon) {
@@ -354,7 +476,6 @@ function displayPokemonDetail(pokemonData) {
         return;
     }
 
-    // Structure HTML pour le detail-pokedex
     document.getElementById('pokemon-detail').innerHTML = `
         <div class="pokemon-detail-header">
             <img id="detail-image" src="${pokemon.imagePath || ''}" alt="${pokemon.name}">
@@ -415,5 +536,4 @@ function displayPokemonDetail(pokemonData) {
 closePokedexBtn.addEventListener('click', closeDetailPokedex);
 overlay.addEventListener('click', closeDetailPokedex);
 
-// Initial load
 fetchPokemon();

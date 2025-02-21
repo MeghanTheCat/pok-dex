@@ -34,7 +34,6 @@ exports.getTrainerByUsername = async (req, res) => {
     const username = req.query.username;
     if (username) {
         const trainer = await trainerService.getTrainerByUsername(username);
-        console.log(trainer);
         return res.status(200).json({
             data: trainer
         });

@@ -7,6 +7,7 @@ class TrainerService {
 
     async addTrainer(trainer) {
         let result;
+        console.log(trainer);
         try {
             result = await this.trainerModel.create(trainer);
         } catch (error) {
@@ -37,7 +38,6 @@ class TrainerService {
 
     async getTrainerByUsername(username) {
         let result;
-        username = username[0].toUpperCase() + username.slice(1).toLowerCase();
         try {
             result = await this.trainerModel.findOne({ username: username });
         } catch (error) {

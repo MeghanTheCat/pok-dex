@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainer Profile - Pokedia</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/trainer.css">
+    <script src="../scripts/trainer.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Pokedia</h1>
+        <nav>
+            <ul>
+                <li id="auth-section">
+                    <div id="user-info" class="hidden">
+                        <span id="username-display"></span>
+                        <a href="../index.html" class="nav-link">Home</a>
+                        <button id="logout-btn">Logout</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="trainer-container">
+            <div class="trainer-pokedex">
+                <div class="decorative-lights">
+                    <div class="light"></div>
+                    <div class="light"></div>
+                    <div class="light"></div>
+                </div>
+                <div class="screen-container">
+                    <div class="trainer-profile">
+                        <div class="profile-header">
+                            <div class="profile-image-container">
+                                <img id="trainer-image" src="" alt="Trainer Profile" class="profile-image">
+                            </div>
+                            <div class="profile-info">
+                                <h2 id="trainer-name" class="trainer-name"></h2>
+                                <p id="trainer-username" class="trainer-username"></p>
+                            </div>
+                            <button id="edit-profile" class="edit-button main-edit">Edit Profile</button>
+                        </div>
+                        <div class="trainer-stats">
+                            <h3>Trainer Statistics</h3>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <span class="stat-label">Pokémon Seen</span>
+                                    <span id="pkmn-seen" class="stat-value">0</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-label">Pokémon Caught</span>
+                                    <span id="pkmn-caught" class="stat-value">0</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-label">Trainer Since</span>
+                                    <span id="creation-date" class="stat-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal pour l'édition du profil -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="decorative-lights">
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+            </div>
+            <div class="screen-container">
+                <h3>Edit Profile</h3>
+                <form id="edit-form">
+                    <div class="form-group">
+                        <label for="edit-trainer-name">Trainer Name</label>
+                        <input type="text" id="edit-trainer-name" name="trainerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-username">Username</label>
+                        <input type="text" id="edit-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-image-path">Profile Image URL</label>
+                        <input type="text" id="edit-image-path" name="imagePath" required>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="save-button">Save</button>
+                        <button type="button" class="cancel-button" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="overlay" class="overlay hidden"></div>
+</body>
+
+</html>

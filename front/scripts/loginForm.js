@@ -3,6 +3,10 @@ const loginForm = document.getElementById('loginForm');
 const toggleForm = document.getElementById('toggleForm');
 let isLoginForm = false;
 
+if (localStorage.getItem('token')) {
+    window.location.href = "../index.html";
+}
+
 toggleForm.addEventListener('click', () => {
     isLoginForm = !isLoginForm;
     registerForm.classList.toggle('hidden');
@@ -59,13 +63,14 @@ async function checkIfUserHasTrainer(username) {
     console.log(token, username);
     fetch(`http://localhost:3000/trainer/search?username=${username}`, {
         headers: {
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2IzMDU0MDA0Y2E3NmRlNDExYmY5YzkiLCJpYXQiOjE3Mzk4NzUxOTAsImV4cCI6MTczOTg4OTU5MH0.FZQNbKiYqoGjHgO6lNEXSJZV0CPUZQWPKm1trV-y6rM"
+            "Authorization": `Bearer ${token}`
         }
     }).then((response) => response.json())
         .then((result) => {
             if (!result.data) {
-                window.location.href = "../index.html";
+                window.location.href = "../page/sign-trainer.html"; 
             } else {
+                localStorage.setItem('trainer', result.data);
                 window.location.href = "../index.html";
             }
         })
@@ -104,8 +109,6 @@ async function login(email, password) {
                     email: email,
                     username: result.username
                 }));
-                console.log(localStorage.getItem('token'));
-                console.log(token);
                 checkIfUserHasTrainer(result.username);
             }
         })
