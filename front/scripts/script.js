@@ -141,9 +141,9 @@ async function displayCurrentPage() {
     currentPokemon.forEach(pokemon => {
         let isSeen = false;
         let isCaptured = false;
-        let imageFilter = 'brightness(0)'; // Par défaut: noir (non vu)
+        let imageFilter = 'brightness(0)';
 
-        if (trainer) {
+        if (trainer != null) {
             isCaptured = trainer.pkmnCatch.some(capturedPkmn => capturedPkmn.name === pokemon.name);
             isSeen = trainer.pkmnSeen.some(seenPkmn => seenPkmn.name === pokemon.name);
 
@@ -152,6 +152,10 @@ async function displayCurrentPage() {
             } else if (isSeen) {
                 imageFilter = 'grayscale(100%)'; // Noir et blanc
             }
+        } else {
+            isCaptured = true;
+            isSeen = true;
+            imageFilter = 'brightness(1)'
         }
 
         let typesHTML = '';
@@ -181,7 +185,6 @@ async function displayCurrentPage() {
                 </button>
             </div>
         ` : '';
-        console.log(trainer._id)
         const pokemonCard = `
             <div class="pokemon-card" data-name="${pokemon.name}">
                 <div class="pokemon-image-container">
