@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', function(next) {
-    console.log('Fonction exec avant save');
+    // console.log('Fonction exec avant save');
     if (this.firstname[0] !== this.firstname[0].toUpperCase()) {
         this.firstname = this.firstname[0].toUpperCase() + this.firstname.slice(1);
     }

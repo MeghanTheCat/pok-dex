@@ -48,7 +48,6 @@ function checkAuthStatus() {
         signInLink.classList.add('hidden');
         userInfoSection.classList.remove('hidden');
         usernameDisplay.textContent = user.username;
-        console.log(user.username);
         return true;
     } else {
         signInLink.classList.remove('hidden');

@@ -21,7 +21,7 @@ exports.createAdmin = async (req, res) => {
     // }
     const { username, firstname, lastname, email, password } = req.body;
     const result = await userService.createUser(username, firstname, lastname, 'admin', email, password);
-    console.log(result);
+    // console.log(result);
     if (result.error) {
         return res.status(500).json(result);
     }
@@ -100,7 +100,7 @@ exports.register = async (req, res) => {
 
 exports.login = async (req,res)=> {
     const result = await userService.login(req.body.email, req.body.password)
-    console.log(result);
+    // console.log(result);
     if (result.error) {
         return res.status(400).send(result);
     }

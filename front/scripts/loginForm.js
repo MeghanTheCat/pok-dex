@@ -41,8 +41,8 @@ async function register(firstname, lastname, username, email, password) {
     console.log(requestOptions);
 
     fetch("http://localhost:3000/users/register", requestOptions)
-        .then((response) => response.text())
-        .then((result) => {
+        .then((response) => response.json())
+        .then(async (result) => {
             if (result.error) {
                 document.querySelectorAll(".error-container").forEach(e => {
                     e.textContent = result.error;
@@ -53,6 +53,25 @@ async function register(firstname, lastname, username, email, password) {
         })
         .catch((error) => console.error(error));
 }
+
+async function checkIfUserHasTrainer(username) {
+    const token = localStorage.getItem('token');
+    console.log(token, username);
+    fetch(`http://localhost:3000/trainer/search?username=${username}`, {
+        headers: {
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2IzMDU0MDA0Y2E3NmRlNDExYmY5YzkiLCJpYXQiOjE3Mzk4NzUxOTAsImV4cCI6MTczOTg4OTU5MH0.FZQNbKiYqoGjHgO6lNEXSJZV0CPUZQWPKm1trV-y6rM"
+        }
+    }).then((response) => response.json())
+        .then((result) => {
+            if (!result.data) {
+                window.location.href = "../index.html";
+            } else {
+                window.location.href = "../index.html";
+            }
+        })
+        .catch((error) => console.log(error))
+}
+
 
 async function login(email, password) {
     const myHeaders = new Headers();
@@ -85,7 +104,9 @@ async function login(email, password) {
                     email: email,
                     username: result.username
                 }));
-                window.location.href = "../index.html";
+                console.log(localStorage.getItem('token'));
+                console.log(token);
+                checkIfUserHasTrainer(result.username);
             }
         })
         .catch((error) => console.error(error));

@@ -30,10 +30,11 @@ exports.getTrainer = async (req, res) => {
 }
 
 exports.getTrainerByUsername = async (req, res) => {
-    req.auth.role = await getRole(req.auth.userId);
+    // req.auth.role = await getRole(req.auth.userId);
     const username = req.query.username;
     if (username) {
         const trainer = await trainerService.getTrainerByUsername(username);
+        console.log(trainer);
         return res.status(200).json({
             data: trainer
         });
